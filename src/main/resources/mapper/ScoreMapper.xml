@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.manage.mapper.ScoreMapper">
+    <resultMap id="ScoreMap" type="Score">
+        <id column="id" property="id"/>
+        <result column="course" property="course"/>
+        <result column="score" property="score"/>
+        <result column="stu_id" property="stuId"/>
+        <result column="stu_name" property="stuName"/>
+        <!-- 新增学生字段映射 -->
+        <result column="gender" property="gender"/>
+        <result column="age" property="age"/>
+        <result column="stu_class" property="stuClass"/>
+    </resultMap>
+
+    <select id="selectByStuId" resultMap="ScoreMap">
+        SELECT s.id, s.course, s.score, s.stu_id,
+        st.stu_name, st.gender, st.age, st.stu_class
+        FROM score s
+        LEFT JOIN student st ON s.stu_id = st.id
+        WHERE s.stu_id = #{stuId}
+    </select>
+
+    <insert id="insert">
+        INSERT INTO score(course,score,stu_id)
+        VALUES(#{course},#{score},#{stuId})
+    </insert>
+
+    <select id="selectById" resultMap="ScoreMap">
+        SELECT id,course,score,stu_id
+        FROM score
+        WHERE id = #{id}
+    </select>
+
+    <update id="updateById">
+        UPDATE score
+        SET course=#{course},score=#{score},stu_id=#{stuId}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM score WHERE id = #{id}
+    </delete>
+
+    <!-- 关联学生表查询完整信息，按学生ID排序 -->
+    <select id="selectAll" resultMap="ScoreMap">
+        SELECT s.id, s.course, s.score, s.stu_id,
+        st.stu_name, st.gender, st.age, st.stu_class
+        FROM score s
+        LEFT JOIN student st ON s.stu_id = st.id
+        ORDER BY st.id, s.id
+    </select>
+</mapper>
